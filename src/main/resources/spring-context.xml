@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task" 
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		http://www.springframework.org/schema/websocket
+ 		http://www.springframework.org/schema/websocket/spring-websocket-4.1.xsd">
+
+	<description>Spring Configuration</description>
+	
+    <!-- 加载配置属性文件 -->
+	<!-- <context:property-placeholder ignore-unresolvable="true" location="classpath:jeesite.properties" /> -->
+
+	<!-- 加载应用属性实例，可通过  @Value("#{APP_PROP['jdbc.driver']}") String jdbcDriver 方式引用 -->
+    <util:properties id="APP_PROP" location="classpath:jeesite.properties" local-override="true"/>
+	
+	<!-- 使用Annotation自动注册Bean，解决事物失效问题：在主容器中不扫描@Controller注解，在SpringMvc中只扫描@Controller注解。  -->
+	<context:component-scan base-package="com.eooker.lafite"><!-- base-package 如果多个，用“,”分隔 -->
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	
+	<!-- 加载数据库文件并且加密数据库账号密码 -->
+	<bean id="encrypt" class="com.eooker.lafite.common.web.EncryptPropertyPlaceholderConfigurer" p:location="classpath:jeesite.properties"
+		p:username="${jdbc.username}"
+		p:password="${jdbc.password}">
+	</bean> 
+	
+	<!-- <bean id="websocket" class="com.eooker.lafite.modules.test.web.WebsocketEndPoint"/>  
+	<websocket:handlers>
+		<websocket:mapping path="/websocket" handler="websocket"></websocket:mapping>
+		<websocket:handshake-interceptors>
+			<bean class="com.eooker.lafite.modules.test.web.HandshakeInterceptor"></bean>
+		</websocket:handshake-interceptors>
+	</websocket:handlers>  -->
+	
+ 	<!-- MyBatis begin -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="typeAliasesPackage" value="com.eooker.lafite"/>
+        <property name="typeAliasesSuperType" value="com.eooker.lafite.common.persistence.BaseEntity"/>
+        <property name="mapperLocations" value="classpath:/mappings/**/*.xml"/>
+		<property name="configLocation" value="classpath:/mybatis-config.xml"></property>
+    </bean>
+    
+    <!-- 扫描basePackage下所有以@MyBatisDao注解的接口 -->
+    <bean id="mapperScannerConfigurer" class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+        <property name="basePackage" value="com.eooker.lafite"/>
+        <property name="annotationClass" value="com.eooker.lafite.common.persistence.annotation.MyBatisDao"/>
+    </bean>
+    
+    <!-- 定义事务 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <!-- MyBatis end -->
+    
+	<!-- 配置 JSR303 Bean Validator 定义 -->
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- 缓存配置 -->
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:${ehcache.configFile}" />
+	</bean>
+	
+	<!-- 计划任务配置，用 @Service @Lazy(false)标注类，用@Scheduled(cron = "0 0 2 * * ?")标注方法 -->
+    <task:executor id="executor" pool-size="10"/> <task:scheduler id="scheduler" pool-size="10"/>
+    <task:annotation-driven scheduler="scheduler" executor="executor" proxy-target-class="true"/>
+    
+    
+    	<!-- <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"
+    			p:driverClassName="${jdbc.driver}"
+    			p:url="${jdbc.url}"
+    			p:initialSize="${jdbc.pool.init}"
+    			p:minIdle="${jdbc.pool.minIdle}"
+    			p:maxActive="${jdbc.pool.maxActive}"
+    			p:validationQuery="${jdbc.testSql}"
+		 > 
+	    <property name="username" ref="encrypt"/>
+	    <property name="password" ref="encrypt"/>
+		配置获取连接等待超时的时间
+		<property name="maxWait" value="60000" />
+		
+		配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		配置一个连接在池中最小生存的时间，单位是毫秒
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		配置监控统计拦截的filters
+	    <property name="filters" value="stat" /> 
+	</bean> -->
+    
+    
+	<!-- 数据源配置, 使用 BoneCP 数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close"
+		 > 
+	    <!-- 数据源驱动类可不写，Druid默认会自动根据URL识别DriverClass -->
+	    <property name="driverClassName" value="${jdbc.driver}" />
+	    
+		<!-- 基本属性 url、user、password -->
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="#{encrypt.username}" />
+		<property name="password" value="#{encrypt.password}" />
+		<!-- 配置初始化大小、最小、最大 -->
+		<property name="initialSize" value="${jdbc.pool.init}" />
+		<property name="minIdle" value="${jdbc.pool.minIdle}" /> 
+		<property name="maxActive" value="${jdbc.pool.maxActive}" />
+		
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="60000" />
+		
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="60000" />
+		
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+		
+		<property name="validationQuery" value="${jdbc.testSql}" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用） -->
+		<property name="poolPreparedStatements" value="true" />
+		<property name="maxPoolPreparedStatementPerConnectionSize" value="20" />
+		
+		<!-- 配置监控统计拦截的filters -->
+	    <property name="filters" value="stat" /> 
+	</bean>
+	
+	<!-- 数据源配置, 使用应用服务器的数据库连接池 
+	<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/jeesite" />-->
+
+	<!-- 数据源配置, 不使用连接池 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+	</bean>-->
+	
+	<bean id="orderProducer" class="com.aliyun.openservices.ons.api.bean.OrderProducerBean" 
+	init-method="start" destroy-method="shutdown">
+		<!-- Spring 接入方式支持 Java SDK 支持的所有配置项 -->
+		<property name="properties"> <!--生产者配置信息 -->
+			<props>
+				<prop key="ProducerId">XXX</prop>
+				<prop key="AccessKey">XXX</prop>
+				<prop key="SecretKey">XXX</prop>
+			</props>
+		</property>
+	</bean>
+
+    <!-- 所有数据的批处理监听器 -->
+	<bean id="batch" class="com.eooker.lafite.common.mq.listener.BatchMessageListener"/>
+	
+	<!-- 水表的流处理监听器 -->
+	<bean id="water_flow" class="com.eooker.lafite.common.mq.listener.FlowWaterMessageListener"/>
+	
+	<!-- 电表的流处理监听器 -->
+	<bean id="electric_flow" class="com.eooker.lafite.common.mq.listener.FlowElectricMessageListener"/>
+	
+	<!-- 集群订阅 -->
+	<bean id="batchConnsumer" class="com.aliyun.openservices.ons.api.bean.OrderConsumerBean" init-method="start" destroy-method="shutdown">
+		<property name="properties"> 
+			<props>
+				<prop key="ConsumerId">CID_liuyu</prop>
+				<prop key="AccessKey">LTAItgegSLMtOmNE</prop>
+				<prop key="SecretKey">H8konZ3buhiYhKiZf7yn6oRBeTV4Y2</prop>
+				<!-- 订阅模式：广播-BROADCASTING 集群(默认)-CLUSTERING -->
+				<prop key="MessageModel">CLUSTERING</prop>
+				<!--将消费者线程数固定为50个 <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="batch">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="topic_for_demo" />
+							<property name="expression" value="*" />
+						</bean>
+					</key>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!-- 广播订阅,水表的流处理-->
+	<bean id="consumer" class="com.aliyun.openservices.ons.api.bean.OrderConsumerBean" 
+	init-method="start" destroy-method="shutdown">
+		<property name="properties"> 
+			<props>
+				<prop key="ConsumerId">XXX</prop>
+				<prop key="AccessKey">XXX</prop>
+				<prop key="SecretKey">XXX</prop>
+				<!-- 订阅模式：广播-BROADCASTING 集群(默认)-CLUSTERING -->
+				<prop key="MessageModel">BROADCASTING</prop>
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="water_flow">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="topic" />
+							<!--expression 即 Tag，可以设置成具体的 Tag，如 taga||tagb||tagc
+							也可设置成*。 *仅代表订阅所有 Tag，不支持通配-->
+							<property name="expression" value="taga" />
+						</bean>
+					</key>
+				</entry>
+				<!-- 更多的订阅添加 entry 节点即可  -->
+			</map>
+		</property>
+	</bean>
+	
+	<!-- 广播订阅,电表的流处理-->
+ 	<bean id="electricFlowConnsumer" class="com.aliyun.openservices.ons.api.bean.OrderConsumerBean" init-method="start" destroy-method="shutdown">
+		<property name="properties"> 
+			<props>
+				<prop key="ConsumerId">CID_zihao</prop>
+				<prop key="AccessKey">LTAItgegSLMtOmNE</prop>
+				<prop key="SecretKey">H8konZ3buhiYhKiZf7yn6oRBeTV4Y2</prop>
+				<!-- 订阅模式：广播-BROADCASTING 集群(默认)-CLUSTERING -->
+				<prop key="MessageModel">BROADCASTING</prop>
+				<!-- 将消费者线程数固定为50个  -->
+				<!-- <prop key="ConsumeThreadNums">50</prop> -->
+			</props>
+		</property>
+		<property name="subscriptionTable">
+			<map>
+				<entry value-ref="electric_flow">
+					<key>
+						<bean class="com.aliyun.openservices.ons.api.bean.Subscription">
+							<property name="topic" value="topic_for_demo" />
+							<property name="expression" value="electric" />
+						</bean>
+					</key>
+				</entry>
+			</map>
+		</property>
+	</bean>
+	
+</beans>

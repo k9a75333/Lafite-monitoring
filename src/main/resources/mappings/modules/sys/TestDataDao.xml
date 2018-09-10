@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eooker.lafite.modules.sys.dao.TestDataDao">
+    
+    <resultMap id="TestDataResult" type="TestData">
+		<id property="id" column="id" />
+		<result property="water_data" column="data" />
+		<result property="time" column="time" />
+		
+	</resultMap>
+	
+    <sql id="TestDataColumns">
+    	id,
+    	`data`,
+    	time
+    </sql>
+    
+	<select id="selectTestData" resultMap="TestDataResult">
+		SELECT
+		<include refid="TestDataColumns"/>
+			
+		FROM data_waterpump
+		
+		WHERE id = #{id}
+	</select>
+	
+		
+	<insert id="insertTestData">
+		INSERT INTO data_waterpump(
+			id, 
+			`data`,
+			time
+		) VALUES (
+			#{id}, 
+			#{data},
+			#{time}
+		)
+	</insert>
+	
+	<update id="updataTestData">
+		UPDATE data_waterpump SET 
+			id = #{id}, 
+			`data` = #{data},
+			time = #{time}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="deleteTestData">
+		DELETE FROM data_waterpump WHERE id = #{id}
+	</delete>
+	
+	
+</mapper>

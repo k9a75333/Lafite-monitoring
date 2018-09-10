@@ -1,0 +1,118 @@
+@CHARSET "UTF-8";
+/*------------------------  批定义  --------------------------------*/
+body,div,h1,h2,h3,h4,h5,ul,li,ol,p,button,input,span,figure{
+	margin:0;padding: 0;
+}
+body,div,h1,h2,h3,h4,h5,ul,li,ol,p,button,input,span {
+	font-family: "Microsoft Yahei UI", "Microsoft YaHei","Helvetica Neue", Helvetica, Arial,SimSun, SimHei, "宋体", simsun, sans-serif;	
+}
+ul,ol {
+	list-style: outside none none;
+}
+
+a {
+	text-decoration: none;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	border: none;
+	background: transparent;
+}
+/*边框和大小合并*/
+div,figure,figcaption,img{
+	box-sizing: border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+    -webkit-box-sizing:border-box;/* Safari */
+    -o-box-sizing: border-box; 
+    -ms-box-sizing: border-box; 
+    box-sizing: border-box;
+}
+/*文本省略*/
+.textOmitted {
+	display: block; 
+	white-space: nowrap;/* IE6 需要定义宽度 */
+	overflow: hidden;            
+	-o-text-overflow: ellipsis; /* Opera */
+	text-overflow:    ellipsis; /* IE, Safari (WebKit) */
+}
+/*webkit内核中显示两行*/
+.webkitShow2Row {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 2;
+	overflow: hidden;
+}
+/*垂直居中的参照物*/
+.verticalToCenter{
+	content:".";  
+	height:100%; 
+	width: 0px!important; 
+	visibility:hidden;  
+	display:inline-block;
+	*display: inline;
+	*zoom:1;
+	vertical-align: middle;
+}
+/*隐藏*/
+.none {
+	display: none;
+}
+/*虚线*/
+.dot{ 
+	width:95%;
+	color:#7AC5C5;
+	border-style:dashed dotted;
+	margin:0 auto;
+}
+/*清除浮动*/
+.clearfix:after {
+	content:".";  
+	height:0;  
+	visibility:hidden;  
+	display:block;  
+	clear:both;  
+}
+/*占用位置*/
+span.after {
+	content:".";  
+	height:5px;  
+	visibility:hidden;  
+	display:block;  
+}
+
+/*信息公示*/
+#mrq {
+	width:100%; 
+	max-height: 100px;
+	min-width: 627.4px;
+	margin:5px auto;
+	background: #fff;
+}
+#Marquee_x { 
+	overflow:hidden; 
+	width: 100%;
+} 
+/* 横向滚动必须让所有li左浮动 */
+#Marquee_x ul li ,#Marquee_x ul li div{ 
+	float:left;
+	overflow:hidden;
+} 
+#Marquee_x ul li div{ 
+	height: 100%;
+	float:left;
+	overflow:hidden;
+}
+#Marquee_x ul li div img { 
+	box-sizing: border-box;
+	border:2px solid #eee; 
+	display:block;
+	vertical-align: middle;
+	border-radius: 4px;
+	cursor: pointer;
+}
+#Marquee_x ul li div img:hover {
+	border:2px solid #ff6600; 
+}
+

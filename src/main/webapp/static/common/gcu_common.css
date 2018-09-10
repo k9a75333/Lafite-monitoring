@@ -1,0 +1,412 @@
+@CHARSET "UTF-8";
+/*-------------------------页面基本框架一-----------------------------------*/
+#container {
+	width:100%;
+	min-width: 768px;
+	*min-width: 1024px;
+	margin: 0 auto;
+	background-color: snow;
+}
+/*------------------------- 页面头部 ---------------------------*/
+/*头部位置*/
+#header {
+	width:100%;
+	min-width: 768px;
+	*min-width: 1024px;
+	margin: 0 auto;
+	z-index: 10000;	
+}
+#header span.after {
+	height: 42px;
+}
+#headerContent {
+	position: relative;
+	z-index: 1;
+	top: 0;
+	width:100%;
+	padding-bottom: 3%;
+}
+#headerContent .navAndSearchP {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1;
+	background-color: rgb(17,38,79);
+	/*background: #11264f;*/
+	opacity: 0.9;
+	*filter: alpha(opacity=90);	
+}
+#headerContent .navAndSearch{
+	background-color: transparent;
+	height: 100%;
+	width: 100%;
+	max-width: 1920px;
+	margin: 0 auto;
+}
+#headerContent .languageAndSearchP{
+	height:42%;
+	width: 74.25%;
+	margin: 0 auto;
+	text-align: center;
+}
+#headerContent .languageAndSearch{
+	height: 1.5em;
+	max-height: 100%;
+	overflow: hidden;
+	display: inline-block;
+	*display: inline;
+	*zoom:1;
+	width: 99%;
+	vertical-align: middle;
+}
+#headerContent .languageP{
+	width: 9.5%;
+	float: left;
+	height: 100%;
+}
+#headerContent .language{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 9em;
+	*zoom: 1;
+}
+#headerContent .language .lc {
+	text-align: right;
+	color: #bbb;
+	height: 1.2em;
+	line-height: 1em;
+}
+#headerContent .language .lc > a:hover{
+	color: #fff;
+}
+#headerContent .lc > a {
+	color:#bbb;
+	text-decoration:none;
+	letter-spacing: 1px;
+	font-size: 12px;
+	cursor: pointer;
+}
+#headerContent .lc span{
+	display: inline-block;
+	*display: inline;
+	*zoom:1;
+	padding: 0 4px 0 2px;
+	font-size: 12px;
+	vertical-align: middle;
+}
+#headerContent .searchP{
+	width: 9.5%;
+	height: 1em;
+	float: right;
+	height: 100%;
+}
+#headerContent .search{
+	position: absolute;
+	right: 0;
+	top: 0;
+	width:450%;
+	*width:500%;
+	font-size:16px;
+	height: 1.5em;
+	line-height: 1em;
+	text-align:right;
+	padding-right:1px;
+}
+#headerContent .followNav {
+	display: inline-block;
+	*display: inline;
+	*zoom:1;
+	font-size: 20px;
+	word-spacing: -0.1em;
+	vertical-align: middle;
+	position: relative;
+	color: transparent; 
+}
+
+#headerContent .nav {
+	height:58%;
+	width: 74.25%;
+	margin: 0 auto;
+	text-align: center;
+}
+#headerContent .navList {
+	max-height: 100%;
+	display: inline-block;
+	*display: inline;
+	*zoom:1;
+	width: 99%;
+	vertical-align: middle;
+	overflow: hidden;
+}
+#headerContent .navList li {
+	display: block;
+	height: 100%;
+	float: left;
+	width: 9.5%;
+	margin-top: -0.1em;
+	*margin-top: 0;
+} 
+#headerContent .navList li.logoPosition {
+	width: 24%;
+	*width: 23.5%;
+	height: 100%;
+	color: #003;
+}
+#headerContent .navList li > a {
+	display: block;
+	color: #ddd;
+	cursor: pointer;
+	width: 100%;
+	border-radius: 5px;
+	cursor: pointer;
+}
+#headerContent .navList li > a:hover{
+	color: #fff;
+}
+#headerContent .navList li > a > span {
+	display: block;
+	width: 100%;
+	font-size: 18px;
+	overflow: hidden;
+	text-align: center;
+}
+#headerContent .navList li > a > span.zh{
+	word-spacing:-0.1em;
+	height: 1.2em;
+}
+#headerContent .navList li > a > span.en{
+	font-size: 12px;
+	margin-top: -0.1em;
+	height: 1.4em;
+	letter-spacing: normal;
+}
+
+#headerContent .headerLogoArea{
+	background: transparent;
+	position: absolute;
+	height: 100%;
+	width: 17.82%;
+	top: 0;
+	left:41.09%;
+	z-index: 1;
+}
+#headerContent .headerLogoArea > img {
+	display: block;
+	margin: 0 auto;
+	height: 125%;
+	cursor:pointer;
+}
+#header .spaceArea {
+	padding-bottom: 2.5%;
+}
+/*------------------------- 内容部分 ---------------------------*/
+#contentArea {
+	width: 100%;
+	min-height:300px; 
+	background-color: snow;
+	margin-top: -2.5%;
+	position: relative;
+	z-index: 0;
+}
+/*--------------------------------底部导航-------------------------*/
+#bottomNav{
+	width: 100%;
+	margin: 0 auto;
+	background-color: #3385ad;
+}
+#bottomNav a {
+	color: #eee;
+}
+#bottomNav a:hover{
+	color: #fff;
+}
+#bottomNav .titleNav , #bottomNav .contentNav {
+	width: 75%;
+	max-width: 1335px;/*1780*75%*/
+	margin: 0 auto;
+}
+#bottomNav .titleNav {
+	
+}
+#bottomNav #moreCollectNav {
+	width: 100%;
+	background-color: #3399CC;
+	*filter: alpha(opacity=90);	
+	opacity: 0.9;
+}
+#bottomNav .titleNav > ul > li {
+	display: inline-block;
+	float: left;
+	width: 14%;
+	height: 55px;
+	font-size:16px;
+	text-align: center;	
+	cursor: pointer;
+}
+#bottomNav .titleNav > ul > li > a {
+	padding: 0.5em 0.5em 0 0;
+	display: block;
+	height: 100%;
+	box-sizing: border-box;
+	-moz-box-sizing:border-box; 
+    -webkit-box-sizing:border-box;
+    overflow: hidden;
+}
+#bottomNav .titleNav > ul > li > a > span{
+	display: block;
+	font-size: 12px;
+	overflow: hidden;
+	height: 1.4em;
+	line-height: 1.4em;
+}
+#bottomNav .showMoreNav > img {
+	display: block;
+	width: 3em;
+	height: 2em;
+	vertical-align: middle;
+	margin: 0.5em auto;
+}
+#bottomNav .contentNav > ul {
+	padding: 0.5em 0 1em 0;
+	display: inline-block;
+	width: 14%;
+	float: left;
+}
+#bottomNav .contentNav > ul > li {
+	font-size: 12px;
+	height: 1.8em;
+	line-height: 1.8em;
+	padding-right: 1em;
+	display: block; 
+	white-space: nowrap;
+	overflow: hidden;            
+	-o-text-overflow: ellipsis; 
+	text-overflow: ellipsis;
+	text-align: center;
+}
+#bottomNav .contentNav > ul > li > a:hover{text-decoration: underline;}
+#bottomNav .contentNav .twoHeight li {
+	height: 2em;
+}
+/*------------------------------ 页面footer 页面版权 ------------------------*/
+#footer {
+	width: 100%;
+	margin: 0 auto;
+	/*min-height: 175px;*/
+	background: #eee;
+	font-size:12px;
+	color: #666;
+	line-height: 2em;
+}
+#footer .footerContent {
+	width: 85%;
+	max-width: 1513px;/*1780*85%*/
+	margin: 0 auto;
+	padding: 1.5em 18.5% 3em 1.5%;
+	*padding:1.5em 0 3em 0;
+	position: relative;
+}
+#footer .footerContent .footerInfo {
+	display: block;
+}
+
+#footer .footerContent p {
+	display: block;
+}
+#footer .footerContent p , 
+#footer .footerContent p a {
+	color: #999;
+	font-size: 12px;
+}
+#footer .footerContent p > span {
+	display: inline-block;
+	*display: inline;
+	*zoom:1;
+	margin-right: 1em;
+}
+#footer .footerContent p a:hover {
+	color: #444;
+}
+#footer .footerContent p.first ,
+#footer .footerContent p.first a {
+	color: #444;
+	font-weight: bold;
+}
+#footer .footerContent p.first a:hover{
+	color: #000;
+}
+#footer .footerContent p.first {
+	margin-bottom: 0.6em;
+}
+
+#gcu_wechat {
+    position: absolute;
+    width: 30%;
+    top: 1.5em;
+    right: 0;
+    height: 68%;
+}
+#gcu_wechat .wechatContent {
+	display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    width: 96%;
+    text-align: center;
+    position: relative;
+    z-index: 0;
+    color: #900;
+    border-radius: 5px;
+}
+#gcu_wechat .wechatArea{
+	display: inline-block;
+    *display: inline;
+    *zoom: 1;
+    vertical-align: middle;
+    background: #fff;
+    width: 25%;
+    height: 100%;
+    bottom: 0;
+    cursor: pointer;
+    overflow: hidden;
+    text-align: center;
+    font-size: 12px;
+    border-radius: 5px;
+}
+#gcu_wechat .wechatArea > img.w_img{
+	width: 100%;
+	margin: 0 auto;
+	border-radius: 5px;
+}
+#gcu_wechat .wechatArea .w_text{
+	display: block;
+	background-color: transparent;
+	height: 1.5em;
+	line-height: 1.5em;
+	font-size: inherit;
+	margin-top: -3px;
+	border-radius: 5px;
+}
+#gcu_wechat .wb_hg{
+	margin: 0 5%;
+}
+#gcu_wechat .wb_hg > img.w_img {
+	opacity: 0.85;
+	*filter: alpha(opacity=85);	
+}
+/*暂时不需要弹出二维码效果*/
+/*#gcu_wechat .w_hg:hover,
+#gcu_wechat .wb_hg:hover,
+#gcu_wechat .w_yxhg:hover{
+	font-size: 20px!important;
+	height: auto!important;
+	display: block;
+	width: 100%;
+	z-index: 1000;
+	position: absolute;
+	left: 0;
+	bottom: 2px;
+}*/
